@@ -165,8 +165,8 @@ exact same functionality as the original monolithic implementation.
 """
 
 # Import internal processing modules
-from ._experiment.stimuli import create_stimuli_bundle, StimSpec
-from ._experiment.periods import create_periods_bundle, PeriodSpec
+from ._experiment.stimuli import create_stimuli_bundle
+from ._experiment.periods import create_periods_bundle
 from ._experiment.time import create_time_bundle
 from ._experiment.report import _REPORT
 
