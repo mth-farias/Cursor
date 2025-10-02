@@ -30,10 +30,10 @@ Notes
 from __future__ import annotations
 
 from .experiment import EXPERIMENT
+from .color import COLOR
 
 # TODO: Import other config modules when they are refactored
 # from .path import PATH
 # from .param import PARAM
-# from .color import COLOR
 
-__all__ = ["EXPERIMENT"]
+__all__ = ["EXPERIMENT", "COLOR"]

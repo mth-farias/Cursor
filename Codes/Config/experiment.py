@@ -164,31 +164,24 @@ Delegates all computation to specialized modules while maintaining the
 exact same functionality as the original monolithic implementation.
 """
 
-# Import internal processing modules
-from ._experiment.stimuli import create_stimuli_bundle
-from ._experiment.periods import create_periods_bundle
-from ._experiment.time import create_time_bundle
-from ._experiment.report import _REPORT
+# Import internal processing modules - avoid circular imports
+import importlib
+import os
 
-# Create time conversion functions first (needed by other modules)
-time_bundle = create_time_bundle(FRAME_RATE)  # Just time functions initially
+# Determine the correct module path
+current_dir = Path(__file__).parent
+experiment_module_path = current_dir / "_experiment"
 
-# Create period bundle (needs time conversion functions)
-periods_bundle = create_periods_bundle(
-    EXPERIMENTAL_PERIODS,
-    time_bundle["seconds_to_frames"],
-    time_bundle["frames_to_seconds"]
-)
+if experiment_module_path.exists():
+    # Direct import when running as script
+    sys.path.insert(0, str(current_dir))
+    _experiment = importlib.import_module("_experiment")
+else:
+    # Relative import when imported as module
+    from . import _experiment
 
-# Update time bundle with period data for query functions
-time_bundle = create_time_bundle(FRAME_RATE, periods_bundle)
-
-# Create stimulus bundle (needs time conversion functions)
-stimuli_bundle = create_stimuli_bundle(
-    STIMULI,
-    ALIGNMENT_STIM,
-    time_bundle["seconds_to_frames"]
-)
+# Configure all experiment modules with user parameters
+_experiment.configure(FRAME_RATE, EXPERIMENTAL_PERIODS, STIMULI, ALIGNMENT_STIM)
 
 
 #%% CELL 04 — PUBLIC API
@@ -207,11 +200,11 @@ _PUBLIC = {
 	# Stimuli (user inputs + derived)
 	"STIMULI": STIMULI,
 	"ALIGNMENT_STIM": ALIGNMENT_STIM,
-	**stimuli_bundle,
+	**_experiment._STIMULI,
 
 	# Periods (user inputs + derived)
 	"EXPERIMENTAL_PERIODS": EXPERIMENTAL_PERIODS,
-	**periods_bundle,
+	**_experiment._PERIODS,
 
 	# Timebase & arena (user inputs + derived)
 	"NOISE_TOLERANCE": NOISE_TOLERANCE,
@@ -220,7 +213,7 @@ _PUBLIC = {
 	"ARENA_HEIGHT_MM": ARENA_HEIGHT_MM,
 
 	# Time functions and constants
-	**time_bundle,
+	**_experiment._TIME,
 }
 
 EXPERIMENT = MappingProxyType(_PUBLIC)
@@ -234,4 +227,4 @@ Prints key sections for quick inspection.
 """
 
 if __name__ == "__main__":
-	_REPORT["render_experiment_report"](EXPERIMENT)
+	_experiment._REPORT["render_experiment_report"](EXPERIMENT)
