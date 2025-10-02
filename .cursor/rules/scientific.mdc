@@ -1,0 +1,97 @@
+# Scientific Computing Rules
+
+## Data Types & Precision
+- **Coordinates**: `float64` for precision
+- **Frame indices**: `int32` for efficiency
+- **Time values**: `float64` for accuracy
+- **Boolean arrays**: `bool` for memory efficiency
+
+## Scientific Data Validation Patterns
+```python
+def validate_coordinates(coords: np.ndarray, expected_shape: tuple[int, ...]) -> None:
+    """Validate coordinate data for scientific analysis."""
+    if not isinstance(coords, np.ndarray):
+        raise TypeError(f"Expected numpy array, got {type(coords)}")
+    
+    if coords.shape != expected_shape:
+        raise ValueError(f"Expected shape {expected_shape}, got {coords.shape}")
+    
+    if np.any(np.isnan(coords)):
+        raise ValueError("Coordinates contain NaN values")
+    
+    if np.any(np.isinf(coords)):
+        raise ValueError("Coordinates contain infinite values")
+
+def validate_stimulus_detection(column_name: str, stimuli_config: dict) -> None:
+    """Validate stimulus detection configuration."""
+    if not stimuli_config:
+        raise ValueError("STIMULI configuration is empty")
+    
+    for stim_label, info in stimuli_config.items():
+        if info.get("name") == column_name:
+            det = info.get("detection", None)
+            if det is None or len(det) != 2:
+                raise ValueError(
+                    f"Stimulus column '{column_name}' (label '{stim_label}') "
+                    f"is missing a valid detection=(off,on) tuple."
+                )
+            return
+    
+    valid = [info.get("name") for info in stimuli_config.values() if "name" in info]
+    raise ValueError(
+        f"Unknown stimulus column '{column_name}'. "
+        f"Expected one of: {', '.join(valid) if valid else 'none configured'}."
+    )
+```
+
+## Scientific Data Handling
+- **Half-open intervals**: Always use `[start, end)` for frame ranges
+- **Validation at import time**: Derived structures must validate inputs at import time
+- **Time helpers**: Must handle scalars and arrays (`seconds_to_frames`, `frames_to_seconds`)
+- **Vectorization preference**: Prefer NumPy/Pandas vectorization; loops only if vectorization hurts readability
+
+## Reproducibility Standards
+- **Set random seeds** for reproducible results
+- **Document all parameters** in configuration
+- **Version control** all dependencies
+- **Include metadata** in output files
+- **Log all random seeds** and parameters for reproducibility
+
+## Colab/Notebook Environment
+- **Import safety**: Always use the ROOT path setup for absolute imports
+- **Memory management**: Monitor memory usage for large datasets (1000+ flies)
+- **Progress indicators**: Use `tqdm` for long-running operations
+- **Error recovery**: Implement checkpoint/resume for long processes
+- **Drive integration**: Handle Google Drive paths correctly
+- **Session persistence**: Save intermediate results to prevent data loss
+
+## Scientific Error Recovery
+- **Data corruption**: Detect and handle corrupted video files gracefully
+- **Missing files**: Provide clear error messages for missing input data
+- **Partial results**: Save intermediate results before potential failures
+- **Validation failures**: Provide actionable error messages for data issues
+
+## Scientific Documentation Standards
+- **Methodology**: Document the scientific approach and rationale
+- **Parameters**: Explain all thresholds and their scientific basis
+- **Limitations**: Document known limitations and edge cases
+- **Citations**: Reference relevant scientific literature
+- **Reproducibility**: Include all parameters needed to reproduce results
+- **Domain context**: Explain biological/behavioral significance of parameters
+
+## Vectorization & Performance
+- **Prefer NumPy operations** over Python loops
+- **Use broadcasting** for efficient array operations
+- **Document performance considerations** in docstrings
+- **Profile critical sections** for optimization
+
+## Scientific Computing Anti-Patterns
+❌ **Loss of precision** in calculations
+❌ **Unvalidated data** from external sources
+❌ **Non-reproducible** random operations
+❌ **Missing units** in documentation
+❌ **Hardcoded thresholds** without justification
+❌ **Data modification** without backup
+❌ **Unnecessary loops** when vectorization is possible
+❌ **Memory leaks** from unclosed resources
+❌ **Inefficient data structures** for the use case
