@@ -1,0 +1,77 @@
+# Project Philosophy & Core Principles
+
+## Scientific Software Excellence
+- **Quality over speed** - Take time to do things right
+- **Single Source of Truth (SSOT)** - All config values centralized in Config modules
+- **Fail fast, fail clear** - Descriptive errors, no silent defaults
+- **Scientific rigor** - Every decision backed by scientific rationale
+- **Flexible rule override system** - Can override any rule when scientifically justified
+
+## Development Approach
+- **File-focused work** - Only work on specific files being discussed
+- **Preserve functionality** - Never break existing pipeline (purely structural refactoring)
+- **Learn together** - Explain reasoning for modern patterns
+- **Evidence-based decisions** - Architectural choices backed by rationale
+- **Configuration pattern** - User constants → configure() → use bundles
+
+## Code Quality Standards
+- **Complete type hints** with modern syntax (str | None)
+- **Immutable public APIs** using MappingProxyType
+- **Comprehensive validation** with scientific constraints
+- **Cell-based organization** transitioning to standard modules
+- **Configuration-based architecture** pattern (revolutionary breakthrough!)
+
+## Refactoring Principles
+- **100% functionality preservation** - All constants, functions, behavior identical
+- **Clean separation** - User interface completely separated from implementation
+- **Revolutionary patterns** - Configuration functions that hide complexity
+- **Maintained interfaces** - All existing imports continue to work
+- **Scientific validation** - Comprehensive testing with baseline comparison
+
+## Working Philosophy
+- **You're my coding coach** - Teach modern practices as we code
+- **Ask before creating** - Always ask before making new files/directories
+- **Maintain working systems** - Keep Codes_Before/ and Codes_Working/ as reference
+- **Document everything** - Every change gets comprehensive documentation
+
+## Rule Override System
+When scientific or technical requirements justify overriding these rules:
+
+### Override Categories
+- **SCIENTIFIC**: Biological/research requirements override code style
+- **PERFORMANCE**: Large dataset efficiency overrides standard patterns
+- **COMPATIBILITY**: Legacy system integration overrides modern practices
+- **TEMPORARY**: Short-term workaround with planned resolution
+- **EXPERIMENTAL**: Testing new approaches with clear rollback plan
+
+### Override Format
+```python
+# OVERRIDE: [CATEGORY] - [Brief reason]
+# Rationale: [Detailed scientific/technical justification]
+# Alternative considered: [What standard approach was considered and why rejected]
+# Review date: [When this should be reconsidered]
+```
+
+### Examples
+```python
+# OVERRIDE: SCIENTIFIC - Preserve biological time series continuity
+# Rationale: Fly behavior analysis requires frame-perfect timing preservation
+# Alternative considered: Standard rounding, rejected due to cumulative drift
+# Review date: After publication of timing validation study
+frame_index = int(np.floor(time_seconds * FRAME_RATE))  # Instead of round()
+```
+
+```python
+# OVERRIDE: PERFORMANCE - 1000+ fly dataset optimization
+# Rationale: Vectorized processing 10x faster than standard validation loops
+# Alternative considered: Individual validation, rejected for large datasets
+# Review date: When performance requirements change
+# Skip individual validation for bulk processing
+```
+
+## Success Metrics
+- **Functionality preserved**: 100% identical behavior after refactoring
+- **Code quality improved**: Better organization, testing, documentation
+- **Scientific rigor maintained**: All biological constraints preserved
+- **Performance maintained**: No regression in processing speed
+- **Maintainability improved**: Easier to understand and modify
