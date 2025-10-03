@@ -23,7 +23,7 @@ python duck.py status
 
 ---
 
-## ⚡ Essential Commands (The Only 5 You Need)
+## ⚡ Essential Commands (Enhanced Edition)
 
 ### **1. Check Duck's Status**
 ```bash
@@ -31,25 +31,43 @@ duck status
 ```
 Shows Duck's current state, patterns loaded, and system info.
 
-### **2. Apply Configuration Pattern**
+### **2. Smart Pattern Suggestions**
+```bash
+duck pattern suggest Codes_Working/Config/path.py
+```
+**NEW!** Analyzes any file and suggests patterns with confidence scores.
+
+### **3. Apply Configuration Pattern**
 ```bash
 duck pattern config path
 ```
 Guides you through refactoring path.py with 60-80% line reduction.
 
-### **3. Validate Refactoring**
+### **4. Validate Refactoring**
 ```bash
 duck validate path
 ```
 Ensures 100% functionality preservation with comprehensive testing.
 
-### **4. List All Patterns**
+### **5. Analyze Dependencies**
 ```bash
-duck pattern list
+duck analyze deps --tree
 ```
-Shows all 18 patterns Duck knows.
+**NEW!** Shows module dependency trees and import relationships.
 
-### **5. Get Help**
+### **6. Performance Benchmarking**
+```bash
+duck performance run parallel
+```
+**NEW!** Benchmarks Duck's 6x parallel processing speed.
+
+### **7. Analytics & Learning**
+```bash
+duck analytics report --days 7
+```
+**NEW!** Shows usage analytics and learning insights.
+
+### **8. Get Help**
 ```bash
 duck help
 duck help <command>
@@ -154,6 +172,61 @@ Duck enforces **scientific software development rigor**:
 - `PHASE_1_COMPLETE.md` - Core AI system
 - `PHASE_2_COMPLETE.md` - Platform integration
 - `DUCK_COMPLETE_IMPLEMENTATION_PLAN.md` - Full plan
+
+---
+
+## 🚀 Advanced Features (New!)
+
+### **Smart Pattern Discovery**
+Duck now analyzes any file and suggests the best patterns:
+```bash
+duck pattern suggest any_file.py
+```
+- Analyzes file structure, size, complexity
+- Suggests patterns with confidence scores
+- Provides evidence and rationale
+
+### **Dependency Analysis**
+Understand your codebase structure:
+```bash
+duck analyze deps --tree
+duck analyze deps --module Config
+```
+- Maps import relationships
+- Shows dependency trees
+- Filters by module name
+
+### **Performance Benchmarking**
+Measure Duck's efficiency:
+```bash
+duck performance run parallel
+duck performance run validation
+duck performance run pattern
+```
+- Tests parallel processing speed
+- Measures validation performance
+- Benchmarks pattern recognition
+
+### **Analytics & Learning**
+Track Duck's learning and performance:
+```bash
+duck analytics report --days 30
+duck decision log --summary
+duck memory stats
+```
+- Usage analytics and success rates
+- Decision outcome tracking
+- Memory system insights
+
+### **Enhanced Decision Tracking**
+Monitor Duck's autonomous decisions:
+```bash
+duck decision log          # Show recent decisions
+duck decision log --summary # Show statistics
+```
+- Type A/B/C/D decision tracking
+- Confidence score analysis
+- Learning from outcomes
 
 ---
 

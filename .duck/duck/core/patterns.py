@@ -15,9 +15,315 @@ Date: October 3, 2025
 Status: Phase 1 - Core Foundation
 """
 
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, TypedDict
 from pathlib import Path
 from .system import create_duck, Duck
+import re
+import ast
+
+
+# ============================================================================
+# ADVANCED PATTERN DISCOVERY (Phase 2)
+# ============================================================================
+
+class PatternRecommendation(TypedDict):
+    """Schema for pattern recommendations"""
+    pattern_name: str
+    confidence: float  # 0-100
+    rationale: str
+    evidence: List[str]
+    applicability_score: float  # 0-1
+    context_signals: Dict[str, Any]
+
+
+class FileAnalysis(TypedDict):
+    """Schema for file analysis results"""
+    file_path: Path
+    file_size: int
+    line_count: int
+    has_cell_structure: bool
+    import_count: int
+    function_count: int
+    class_count: int
+    complexity_indicators: List[str]
+    structural_patterns: List[str]
+
+
+class PatternDiscoveryEngine:
+    """
+    Advanced pattern discovery engine that analyzes code structure
+    and suggests appropriate patterns with confidence scoring.
+    """
+    
+    def __init__(self, duck: Optional[Duck] = None):
+        self.duck = duck or create_duck()
+        self.pattern_signals = self._build_pattern_signal_database()
+    
+    def _build_pattern_signal_database(self) -> Dict[str, Dict[str, Any]]:
+        """Build database of signals that indicate pattern applicability"""
+        return {
+            "Revolutionary Configuration Pattern": {
+                "file_size_threshold": 200,  # lines
+                "cell_markers": ["CELL 00", "CELL 01", "CELL 02", "CELL 03", "CELL 04"],
+                "complexity_indicators": ["large_module", "multiple_responsibilities", "configuration_data"],
+                "import_patterns": ["typing", "pathlib", "numpy"],
+                "structure_patterns": ["constants_section", "functions_section", "main_section"],
+                "confidence_factors": {
+                    "cell_structure": 0.85,
+                    "large_size": 0.75,
+                    "config_data": 0.80,
+                    "multiple_imports": 0.70
+                }
+            },
+            "Internal Module Architecture": {
+                "import_count_threshold": 10,
+                "complexity_indicators": ["complex_module", "multiple_dependencies"],
+                "structure_patterns": ["monolithic_structure", "mixed_responsibilities"],
+                "confidence_factors": {
+                    "high_import_count": 0.80,
+                    "complex_structure": 0.75,
+                    "multiple_dependencies": 0.85
+                }
+            },
+            "Scientific Rigor Standards": {
+                "complexity_indicators": ["validation_required", "data_processing", "scientific_workflow"],
+                "structure_patterns": ["data_validation", "error_handling", "documentation"],
+                "confidence_factors": {
+                    "validation_patterns": 0.90,
+                    "error_handling": 0.85,
+                    "documentation": 0.80
+                }
+            },
+            "Power User Methodology": {
+                "complexity_indicators": ["performance_critical", "batch_processing", "parallel_operations"],
+                "structure_patterns": ["efficiency_patterns", "optimization_opportunities"],
+                "confidence_factors": {
+                    "performance_patterns": 0.85,
+                    "batch_operations": 0.80,
+                    "optimization_opportunities": 0.75
+                }
+            }
+        }
+    
+    def discover_patterns(self, target_path: Path) -> List[PatternRecommendation]:
+        """
+        Analyze a file/module and discover applicable patterns.
+        
+        Args:
+            target_path: Path to the file to analyze
+            
+        Returns:
+            List of pattern recommendations with confidence scores
+        """
+        if not target_path.exists():
+            return []
+        
+        # Analyze the file
+        analysis = self._analyze_file(target_path)
+        
+        # Generate pattern recommendations
+        recommendations = []
+        for pattern_name, signals in self.pattern_signals.items():
+            recommendation = self._evaluate_pattern_applicability(pattern_name, signals, analysis)
+            if recommendation and recommendation['confidence'] > 50:  # Only return meaningful recommendations
+                recommendations.append(recommendation)
+        
+        # Sort by confidence score
+        recommendations.sort(key=lambda x: x['confidence'], reverse=True)
+        
+        return recommendations
+    
+    def _analyze_file(self, file_path: Path) -> FileAnalysis:
+        """Analyze a file for structural patterns and complexity indicators"""
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            lines = content.split('\n')
+            line_count = len(lines)
+            
+            # Check for cell structure
+            has_cell_structure = any('CELL' in line for line in lines)
+            
+            # Count imports
+            import_count = len([line for line in lines if line.strip().startswith(('import ', 'from '))])
+            
+            # Analyze AST for functions and classes
+            try:
+                tree = ast.parse(content)
+                function_count = len([node for node in ast.walk(tree) if isinstance(node, ast.FunctionDef)])
+                class_count = len([node for node in ast.walk(tree) if isinstance(node, ast.ClassDef)])
+            except:
+                function_count = content.count('def ')
+                class_count = content.count('class ')
+            
+            # Identify complexity indicators
+            complexity_indicators = []
+            if line_count > 200:
+                complexity_indicators.append('large_module')
+            if import_count > 10:
+                complexity_indicators.append('multiple_dependencies')
+            if function_count > 20:
+                complexity_indicators.append('function_heavy')
+            if 'validation' in content.lower() or 'validate' in content.lower():
+                complexity_indicators.append('validation_required')
+            if 'performance' in content.lower() or 'optimize' in content.lower():
+                complexity_indicators.append('performance_critical')
+            
+            # Identify structural patterns
+            structural_patterns = []
+            if has_cell_structure:
+                structural_patterns.append('cell_based_organization')
+            if 'configure(' in content:
+                structural_patterns.append('configuration_pattern')
+            if 'MappingProxyType' in content:
+                structural_patterns.append('immutable_bundles')
+            if 'error' in content.lower() and 'except' in content.lower():
+                structural_patterns.append('error_handling')
+            
+            return FileAnalysis(
+                file_path=file_path,
+                file_size=len(content),
+                line_count=line_count,
+                has_cell_structure=has_cell_structure,
+                import_count=import_count,
+                function_count=function_count,
+                class_count=class_count,
+                complexity_indicators=complexity_indicators,
+                structural_patterns=structural_patterns
+            )
+            
+        except Exception as e:
+            # Return minimal analysis on error
+            return FileAnalysis(
+                file_path=file_path,
+                file_size=0,
+                line_count=0,
+                has_cell_structure=False,
+                import_count=0,
+                function_count=0,
+                class_count=0,
+                complexity_indicators=[],
+                structural_patterns=[]
+            )
+    
+    def _evaluate_pattern_applicability(self, pattern_name: str, signals: Dict[str, Any], 
+                                      analysis: FileAnalysis) -> Optional[PatternRecommendation]:
+        """Evaluate how well a pattern applies to the analyzed file"""
+        confidence_factors = signals.get('confidence_factors', {})
+        evidence = []
+        context_signals = {}
+        
+        # Calculate confidence based on signals
+        total_confidence = 0.0
+        signal_count = 0
+        
+        # Check file size signals
+        if 'file_size_threshold' in signals:
+            if analysis['line_count'] >= signals['file_size_threshold']:
+                confidence = confidence_factors.get('large_size', 0.5)
+                total_confidence += confidence
+                signal_count += 1
+                evidence.append(f"File size ({analysis['line_count']} lines) exceeds threshold")
+                context_signals['large_file'] = True
+        
+        # Check cell structure signals
+        if 'cell_markers' in signals and analysis['has_cell_structure']:
+            confidence = confidence_factors.get('cell_structure', 0.5)
+            total_confidence += confidence
+            signal_count += 1
+            evidence.append("File contains CELL structure markers")
+            context_signals['cell_structure'] = True
+        
+        # Check import count signals
+        if 'import_count_threshold' in signals:
+            if analysis['import_count'] >= signals['import_count_threshold']:
+                confidence = confidence_factors.get('high_import_count', 0.5)
+                total_confidence += confidence
+                signal_count += 1
+                evidence.append(f"High import count ({analysis['import_count']})")
+                context_signals['high_imports'] = True
+        
+        # Check complexity indicators
+        for indicator in signals.get('complexity_indicators', []):
+            if indicator in analysis['complexity_indicators']:
+                confidence = confidence_factors.get(indicator, 0.5)
+                total_confidence += confidence
+                signal_count += 1
+                evidence.append(f"Complexity indicator: {indicator}")
+                context_signals[indicator] = True
+        
+        # Check structural patterns
+        for pattern in signals.get('structure_patterns', []):
+            if pattern in analysis['structural_patterns']:
+                confidence = confidence_factors.get(pattern, 0.5)
+                total_confidence += confidence
+                signal_count += 1
+                evidence.append(f"Structural pattern: {pattern}")
+                context_signals[pattern] = True
+        
+        # Calculate final confidence (average of matched signals)
+        if signal_count > 0:
+            final_confidence = (total_confidence / signal_count) * 100
+            applicability_score = min(1.0, signal_count / 3.0)  # Normalize by expected signal count
+            
+            # Generate rationale
+            rationale = self._generate_rationale(pattern_name, evidence, final_confidence)
+            
+            return PatternRecommendation(
+                pattern_name=pattern_name,
+                confidence=final_confidence,
+                rationale=rationale,
+                evidence=evidence,
+                applicability_score=applicability_score,
+                context_signals=context_signals
+            )
+        
+        return None
+    
+    def _generate_rationale(self, pattern_name: str, evidence: List[str], confidence: float) -> str:
+        """Generate human-readable rationale for pattern recommendation"""
+        if confidence >= 80:
+            strength = "strong"
+        elif confidence >= 60:
+            strength = "moderate"
+        else:
+            strength = "weak"
+        
+        evidence_summary = ", ".join(evidence[:3])  # Limit to first 3 pieces of evidence
+        
+        return f"{strength.title()} match for {pattern_name} based on: {evidence_summary}"
+    
+    def explain_recommendation(self, recommendation: PatternRecommendation) -> str:
+        """
+        Generate detailed explanation of a pattern recommendation.
+        
+        Args:
+            recommendation: Pattern recommendation to explain
+            
+        Returns:
+            Detailed explanation string
+        """
+        explanation = f"""
+🎯 Pattern Recommendation: {recommendation['pattern_name']}
+📊 Confidence: {recommendation['confidence']:.1f}%
+🎯 Applicability: {recommendation['applicability_score']:.1%}
+
+💡 Rationale:
+{recommendation['rationale']}
+
+🔍 Evidence Found:
+"""
+        for evidence in recommendation['evidence']:
+            explanation += f"   • {evidence}\n"
+        
+        explanation += f"""
+📈 Context Signals:
+"""
+        for signal, value in recommendation['context_signals'].items():
+            explanation += f"   • {signal}: {value}\n"
+        
+        return explanation.strip()
 
 
 # ============================================================================
