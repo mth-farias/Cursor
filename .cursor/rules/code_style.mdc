@@ -1,0 +1,135 @@
+# Code Style & Formatting Rules
+
+## General Standards
+- **Line Length**: Maximum 88 characters (Black standard)
+- **Indentation**: 4 spaces (no tabs)
+- **String Quotes**: Double quotes for strings, single quotes for string literals
+- **Trailing Commas**: Use trailing commas in multi-line structures
+- **Blank Lines**: 2 lines between top-level definitions, 1 line between methods
+
+## Import Organization
+```python
+# 1. Standard library imports
+import os
+import sys
+from pathlib import Path
+
+# 2. Related third-party imports
+import numpy as np
+import pandas as pd
+
+# 3. Package path setup (for safe absolute imports)
+ROOT = Path(__file__).resolve().parents[1]  # .../Codes
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+# 4. Local application imports (safe absolute imports from Codes/)
+from Config import EXPERIMENT
+from BehaviorClassifier import classifier
+from Config.path import paths
+```
+
+## Type Hints (Required)
+- **All functions** must have complete type annotations
+- **Use modern syntax**: `str | None` instead of `Optional[str]`
+- **Generic types**: Use `Sequence[T]`, `Mapping[K, V]`, `Callable[[T], R]`
+- **TypedDict**: For structured data with clear schemas
+- **Protocol**: For structural subtyping
+
+## Naming Conventions
+
+### Variables & Functions
+- **snake_case** for variables, functions, and methods
+- **Descriptive names**: `frame_rate` not `fr`, `centroid_x` not `cx`
+- **Boolean prefixes**: `is_`, `has_`, `can_`, `should_`
+- **Private functions**: Single underscore `_helper_function()`
+
+### Constants & Classes
+- **ALL_CAPS** for module-level constants: `FRAME_RATE`, `ARENA_WIDTH_MM`
+- **PascalCase** for classes: `BehaviorClassifier`, `ExperimentConfig`
+- **UPPER_CASE** for enum values: `BehaviorType.WALK`
+
+### Files & Modules
+- **snake_case** for module names: `behavior_classifier.py`
+- **test_ prefix** for test files: `test_experiment_config.py`
+- **Descriptive names**: `fly_tracking_utils.py` not `utils.py`
+
+## Documentation Standards
+
+### Function Docstrings (Google Style)
+```python
+def classify_behavior(
+    coordinates: np.ndarray,
+    frame_rate: int,
+    threshold: float = 0.5
+) -> tuple[BehaviorType, float]:
+    """
+    Classify fly behavior based on movement coordinates.
+    
+    Args:
+        coordinates: Array of (x, y) coordinates over time
+        frame_rate: Video frame rate in Hz
+        threshold: Confidence threshold for classification
+        
+    Returns:
+        Tuple of (behavior_type, confidence_score)
+        
+    Raises:
+        ValueError: If coordinates array is empty or invalid
+        
+    Examples:
+        >>> coords = np.array([[0, 0], [1, 1], [2, 2]])
+        >>> behavior, conf = classify_behavior(coords, 60)
+        >>> print(behavior)
+        BehaviorType.WALK
+        
+    Notes:
+        Uses velocity-based classification with smoothing.
+        Confidence scores range from 0.0 to 1.0.
+    """
+```
+
+## Error Handling Patterns
+```python
+def process_coordinates(coords: np.ndarray) -> np.ndarray:
+    """Process coordinate data with validation."""
+    if not isinstance(coords, np.ndarray):
+        raise TypeError(f"Expected numpy array, got {type(coords)}")
+    
+    if coords.size == 0:
+        raise ValueError("Coordinates array cannot be empty")
+    
+    if coords.ndim != 2 or coords.shape[1] != 2:
+        raise ValueError(
+            f"Expected 2D array with 2 columns (x, y), "
+            f"got shape {coords.shape}"
+        )
+    
+    # Process coordinates...
+    return processed_coords
+```
+
+## Linting & Formatting Tools
+- **Black** for code formatting
+- **isort** for import sorting
+- **flake8** for style checking
+- **mypy** for type checking
+- **pre-commit** hooks for automation
+
+## Complexity Guidelines
+- **Functions**: Maximum 20 lines, single responsibility
+- **Classes**: Maximum 200 lines, clear purpose
+- **Cyclomatic complexity**: Maximum 10 per function
+- **Nesting depth**: Maximum 4 levels
+
+## Anti-Patterns (Strict NOs)
+❌ **Functions without type hints**
+❌ **Missing docstrings** on public functions
+❌ **Hardcoded values** instead of configuration
+❌ **Silent failures** without logging
+❌ **Global variables** for state management
+❌ **Circular imports** between modules
+❌ **Unused imports** or variables
+❌ **Magic numbers** without explanation
+❌ **Comments that restate code** (`x += 1  # add one`)
+❌ **Comments with vague words** (`# stuff`, `# data`)

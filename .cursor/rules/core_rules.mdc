@@ -1,0 +1,100 @@
+# ⚡ **Core Rules: Universal Working Patterns**
+
+## 🎯 **Power User Rules**
+- **Show before/after** - When changing structure, show both versions
+- **Link decisions** - Connect related choices together
+- **Point out patterns** - "This is power user because..."
+- **Ask before big changes** - Confirm before major moves
+- **Explain trade-offs** - Show pros/cons of each choice
+- **Use examples** - Show real-world applications
+- **Think long-term** - What works in 6 months?
+- **Validate understanding** - Make sure I get it
+
+## 🔬 **Scientific Software Rules**
+- **100% functionality preservation** - Never break existing behavior
+- **Evidence-based decisions** - Every choice backed by scientific rationale
+- **Publication standards** - Code must meet peer review requirements
+- **Reproducibility** - All changes must be scientifically reproducible
+- **Documentation** - Scientific context in all code and decisions
+
+## 🎯 **Precision Editing Rules**
+- **Target specific issues** - Fix exact broken lines, not wholesale rewrites
+- **Surgical approach** - Make minimal, precise changes
+- **Preserve working content** - Don't rewrite what's already good
+- **Incremental fixes** - One issue at a time, validate each change
+- **Show exact changes** - You see exactly what I'm fixing and why
+
+## 🚀 **Mandatory Starting Rule for New Chats/Agents**
+
+### **⚠️ CRITICAL: SYSTEMATIC REPO ANALYSIS REQUIRED**
+**Before starting any work, you MUST perform a complete repository analysis:**
+
+#### **🎯 MANDATORY REPO ANALYSIS WORKFLOW:**
+
+**Step 1: Complete Repository Scan (10 minutes)**
+```
+1. Scan entire .cursor/ directory structure
+2. Read ALL files in .cursor/guides/project/
+3. Read ALL files in .cursor/logs/ (active, completed, decisions)
+4. Read ALL files in .cursor/rules/
+5. Read ALL files in .cursor/thinktank/
+6. Scan Codes/ directory structure
+7. Read Codes/Config/ files (experiment.py, color.py, __init__.py)
+8. Read Codes/Config/_experiment/ and Codes/Config/_color/ modules
+9. Scan Codes_Before/ and Codes_Working/ for context
+10. Read any other relevant project files
+```
+
+**Step 2: Context Understanding Report (5 minutes)**
+**You MUST provide a human-readable summary of your understanding:**
+
+```
+## 📋 **CONTEXT UNDERSTANDING REPORT**
+
+### **🎯 Project Mission:**
+[Summarize the complete scientific software pipeline mission]
+
+### **🏗️ Repository Structure:**
+[Describe the three-tier development: Codes_Before → Codes_Working → Codes/]
+
+### **📊 Current Status:**
+[Current progress, completed work, active focus]
+
+### **🚀 Configuration Pattern Success:**
+[Explain the breakthrough pattern with specific metrics]
+
+### **⚙️ Development Philosophy:**
+[Scientific software excellence, rule override system, quality standards]
+
+### **🎯 Current Mission:**
+[Current project focus - check @projects/current/context.md]
+
+### **📚 Key Files & Patterns:**
+[Essential files and their purposes]
+
+### **🔬 Scientific Context:**
+[Drosophila behavior classification, 5 behaviors, 1000+ flies scalability]
+
+### **✅ Understanding Verification:**
+[Confirm you understand all critical aspects]
+```
+
+**Step 3: Interaction Rules Confirmation**
+**Confirm you understand and will follow:**
+- ✅ **24 comprehensive interaction rules**
+- ✅ **Surgical approach** - Fix specific issues, not wholesale rewrites
+- ✅ **Scientific rigor** - 100% functionality preservation
+- ✅ **Power user patterns** - Learn WHY, not just HOW
+- ✅ **Precision editing** - Target exact broken lines
+- ✅ **Documentation** - Write down every decision
+
+#### **🚫 STRICT REQUIREMENTS:**
+- **NO WORK** without complete repo analysis
+- **NO ASSUMPTIONS** - Read everything first
+- **NO GENERIC RESPONSES** - Must understand specific project context
+- **NO RULE VIOLATIONS** - Follow all interaction rules
+- **NO INCOMPLETE UNDERSTANDING** - Must provide context report
+
+---
+
+**This file defines UNIVERSAL WORKING PATTERNS that apply to any project. Use @agent_rules.mdc for personal context.**

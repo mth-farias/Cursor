@@ -1,0 +1,87 @@
+# Fly Behavior Pipeline - Core Cursor Rules
+
+## Project Overview
+This is a **scientific software pipeline** for automated Drosophila behavior classification, being refactored for publication and open-source release. The project aims to create professional, maintainable code that meets scientific computing standards.
+
+## Core Philosophy
+- **Scientific Rigor**: Code must be reproducible, well-documented, and scientifically sound
+- **Modern Python**: Follow current best practices and PEP standards
+- **Maintainability**: Code should be easy to understand, modify, and extend
+- **Collaboration**: Enable team development and open-source contributions
+- **Quality First**: Prioritize correctness and reliability over speed
+
+## Scientific Software Principles
+- **SSOT (Single Source of Truth)**: All config values come directly from Config. Never redefine or hardcode
+- **Fail Fast, Fail Clear**: Raise descriptive errors if config values are missing or invalid. No silent defaults
+- **Best-effort only where justified**: Suppression allowed only for non-critical I/O (e.g., Colab background sync)
+- **Readable before clever**: Prioritize clarity, maintainability, and documentation over brevity
+- **Domain-specific comments**: Comments must describe domain role, not vague purpose
+
+## Rule Override System
+- **You can override ANY rule** - Flexibility is important for scientific work
+- **Always flag overrides** - Use `# OVERRIDE: [reason]` comments
+- **Document the deviation** - Explain why the rule was overridden
+- **Consider alternatives** - Could the rule be improved instead?
+
+### Override Examples
+```python
+# OVERRIDE: Using loop instead of vectorization for readability
+# Scientific rationale: Complex biological logic is clearer in loop form
+for frame in range(start_frame, end_frame):
+    behavior = classify_complex_behavior(frame_data[frame])
+
+# OVERRIDE: Hardcoded threshold for experimental validation
+# Scientific rationale: This threshold is being tested in current experiment
+THRESHOLD = 0.5  # Will be moved to Config after validation
+```
+
+## Development Workflow
+- **File-focused work**: Only work on the specific file being discussed, no unsolicited file creation
+- **Ask before creating**: Always ask before creating new files or directories
+- **Focus on the task**: Stay within the scope of the current discussion
+
+## Rule Modules
+For detailed rules, see:
+- **Code Style**: `.cursor/rules/code_style.md` - Formatting, imports, naming conventions
+- **Scientific Computing**: `.cursor/rules/scientific.md` - Data validation, reproducibility, error handling
+- **Module Structure**: `.cursor/rules/modules.md` - Cell structure, organization patterns
+- **Performance**: `.cursor/rules/performance.md` - Large datasets, monitoring, optimization
+
+## Critical Anti-Patterns (Never Do)
+❌ **Functions without type hints**
+❌ **Missing docstrings** on public functions
+❌ **Hardcoded values** instead of configuration
+❌ **Silent failures** without logging
+❌ **Duplicating config values** in modules
+❌ **Creating directories in Config** (`mkdir`, `touch`)
+❌ **Using `.resolve()`** or any filesystem touch in Config
+
+## Import Safety Pattern (Required)
+```python
+# Package path setup (for safe absolute imports)
+ROOT = Path(__file__).resolve().parents[1]  # .../Codes
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+# Local imports (safe absolute imports from Codes/)
+from Config import EXPERIMENT
+from BehaviorClassifier import classifier
+```
+
+## Public API Pattern (Required)
+```python
+# Each module exports exactly one immutable bundle
+from types import MappingProxyType
+
+_PUBLIC = {
+    "TRACKED_SUFFIX": TRACKED_SUFFIX,
+    "compute_speed": compute_speed,
+}
+
+# Export immutable bundle
+PATH = MappingProxyType(_PUBLIC)
+__all__ = ["PATH"]
+```
+
+---
+*These core rules ensure consistent, professional, and maintainable code that meets scientific computing standards. For detailed guidelines, see the specific rule modules.*

@@ -1,0 +1,145 @@
+# Module Structure & Organization Rules
+
+## Cell-Based Structure (Current Codebase)
+All modules follow a consistent cell-based organization with clear sections:
+
+### **Mandatory Cells (All Files)**
+- **Cell 00 — HEADER & OVERVIEW** (always required)
+- **Cell 01 — IMPORTS** (always required)
+
+### **Optional Cells (Use as needed)**
+- **Cell 02 — CONSTANTS & VALIDATION** (if file has constants)
+- **Cell 03 — HELPER FUNCTIONS** (if file has private helpers)
+- **Cell 04 — CORE LOGIC** (main functionality)
+- **Cell 05 — PUBLIC API** (if file exports public interface)
+- **Cell 06 — REPORT** (if file has diagnostic output)
+
+### **Cell 00 — HEADER & OVERVIEW** (Required)
+```python
+#%% CELL 00 — HEADER & OVERVIEW
+"""
+{{COMMIT_DETAILS}}
+# <github.com/YourLab/Repo>
+# <commit-hash>
+# <DD-MM-YYYY HH:MM:SS>
+
+ModuleName/path.py
+
+Overview
+	Brief description of module purpose and functionality.
+
+API (if applicable)
+	What the module exports for public use.
+
+Canonical layout (if applicable)
+------------------------------------------------------------------------------------
+	Folder structure or data flow diagram
+"""
+```
+
+### **Cell 01 — IMPORTS** (Required)
+```python
+#%% CELL 01 — IMPORTS
+
+from __future__ import annotations
+
+"""
+Purpose
+	Import minimal, stable dependencies used throughout this module.
+	Order: stdlib → typing → third-party → local types.
+"""
+
+# Standard library
+from pathlib import Path
+
+# Typing
+from typing import Iterator
+
+# Package path setup (for safe absolute imports)
+ROOT = Path(__file__).resolve().parents[1]  # .../Codes
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+# Local imports
+from Config import EXPERIMENT
+```
+
+### **Optional Cells (Use when needed)**
+- **Cell 02** - For constants and validation
+- **Cell 03** - For private helper functions
+- **Cell 04** - For main functionality
+- **Cell 05** - For public API exports
+- **Cell 06** - For diagnostic reports
+
+## Standard Python Module Structure (Future Goal)
+```python
+"""
+Module docstring with clear purpose and usage examples.
+"""
+
+from __future__ import annotations
+
+# Imports (organized as above)
+# Constants
+# Type definitions
+# Helper functions (private)
+# Public functions
+# Classes
+# Public API
+```
+
+## Public API Design
+
+### Immutable Public API (Scientific Software Pattern)
+```python
+# Each module exports exactly one immutable bundle
+from types import MappingProxyType
+
+# Create public bundle
+_PUBLIC = {
+    "TRACKED_SUFFIX": TRACKED_SUFFIX,
+    "SLEAP_SUFFIX": SLEAP_SUFFIX,
+    "compute_speed": compute_speed,
+}
+
+# Export immutable bundle
+PATH = MappingProxyType(_PUBLIC)
+__all__ = ["PATH"]
+```
+
+### API Design Rules
+- **Exactly one immutable bundle** per module, wrapped in `MappingProxyType`
+- **No stray globals** or legacy aliases
+- **Single canonical name** per helper or constant
+- **No mutation** of public bundles after definition
+
+## Code Placement Decision Table
+
+### Where should code go?
+
+| **Code Type** | **Location** | **Rationale** |
+|---------------|--------------|---------------|
+| **Experiment-wide constants or schema** | **Config** | Single source of truth for all parameters |
+| **General data transforms (no policy)** | **BehaviorClassifier/_utils** | Stateless helpers for data processing |
+| **Classification thresholds, smoothing, tie-breaks** | **BehaviorClassifier/_classifier** | Domain-specific classification logic |
+| **QC checks and error/flag reporting** | **BehaviorClassifier/_qc_error_flag** | Quality control and error handling |
+| **Orchestration/sequencing** | **BehaviorClassifier/_main** | High-level workflow coordination |
+| **Colab/Drive path handling** | **BehaviorClassifier/_colab** | Environment-specific adapters |
+| **Entry scripts with side-effects** | **`*_run.py`** | Executable scripts for user interface |
+
+### Module Responsibilities
+- **Config**: Never creates directories or resolves paths. Pure configuration only.
+- **BehaviorClassifier**: Core classification logic and data processing
+- **Visualizer**: Video generation and visualization
+- **Plots**: Data visualization and statistical plots
+- **Stats**: Statistical analysis and hypothesis testing
+
+## Module Anti-Patterns
+❌ **Multiple public bundles** or stray globals
+❌ **Logic or QC checks** in the REPORT cell
+❌ **Creating directories in Config** (`mkdir`, `touch`)
+❌ **Using `.resolve()`** or any filesystem touch in Config
+❌ **Mutating public bundles** after definition
+❌ **Printing in non-report cells**
+❌ **Complex logic hidden** inside lambda for public API
+❌ **Circular imports** between modules
